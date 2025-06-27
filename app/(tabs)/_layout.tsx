@@ -1,43 +1,71 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
+        tabBarActiveTintColor: '#4a90e2',
+        tabBarInactiveTintColor: '#b2bec3',
+        tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 6,
+          paddingTop: 6,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size + 2} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="bus-location"
+        options={{
+          title: 'Track Bus',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="bus-clock"
+              size={size + 4}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-circle" size={size + 2} color={color} />
+          ),
+        }}
+      />
+
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Dashboard',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="grid-outline" size={size + 2} color={color} />
+          ),
         }}
       />
+
       <Tabs.Screen
-        name="explore"
+        name="drivers-and-routes"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Drivers',
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="user-tie" size={size + 2} color={color} />
+          ),
         }}
       />
     </Tabs>

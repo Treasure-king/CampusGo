@@ -1,32 +1,60 @@
-import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { Link } from 'expo-router';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-
-export default function NotFoundScreen() {
+export default function NotFound() {
   return (
-    <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="title">This screen doesn't exist.</ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
-        </Link>
-      </ThemedView>
-    </>
+    <View style={styles.container}>
+      <Text style={styles.emoji}>😕</Text>
+      <Text style={styles.title}>Oops! Page Not Found</Text>
+      <Text style={styles.message}>
+        The page you're looking for doesn’t seem to exist.
+      </Text>
+
+      <Link href="/(tabs)/home" asChild>
+        <Pressable style={styles.button}>
+          <Text style={styles.buttonText}>🏠 Go to Home</Text>
+        </Pressable>  
+      </Link>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    alignItems: 'center',
+    backgroundColor: '#f9f9f9',
+    padding: 24,
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  emoji: {
+    fontSize: 72,
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+    color: '#2c3e50',
+  },
+  message: {
+    fontSize: 16,
+    color: '#636e72',
+    textAlign: 'center',
+    marginBottom: 24,
+    maxWidth: 300,
+  },
+  button: {
+    backgroundColor: '#4a90e2',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });
