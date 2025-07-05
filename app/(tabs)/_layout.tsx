@@ -1,7 +1,10 @@
 import { Tabs } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
+  const insets = useSafeAreaInsets();
+
   return (
     <Tabs
       screenOptions={{
@@ -9,8 +12,8 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: '#b2bec3',
         tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
         tabBarStyle: {
-          height: 60,
-          paddingBottom: 6,
+          height: 60 + insets.bottom, // Adjust height based on safe area
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 10,
           paddingTop: 6,
         },
       }}
@@ -30,11 +33,7 @@ export default function TabsLayout() {
         options={{
           title: 'Track Bus',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="bus-clock"
-              size={size + 4}
-              color={color}
-            />
+            <MaterialCommunityIcons name="bus-clock" size={size + 4} color={color} />
           ),
         }}
       />

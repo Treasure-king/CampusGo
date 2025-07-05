@@ -5,7 +5,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "types": ["react", "react-native"],
+    "skipLibCheck": true
   },
   "include": [
     "**/*.ts",

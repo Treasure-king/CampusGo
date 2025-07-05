@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDocs, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../config/firebaseConfig';
 import { FontAwesome5, MaterialCommunityIcons, Entypo, Feather } from '@expo/vector-icons';
 
@@ -16,34 +16,53 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubBuses = onSnapshot(collection(db, 'buses'), snapshot => {
+    // Listen to buses collection
+    const unsubBuses = onSnapshot(collection(db, 'drivers'), snapshot => {
       setStats(prev => ({ ...prev, totalBuses: snapshot.size }));
     });
 
+    // Listen to drivers collection
     const unsubDrivers = onSnapshot(collection(db, 'drivers'), snapshot => {
       setStats(prev => ({ ...prev, totalDrivers: snapshot.size }));
     });
 
+    // Listen to users collection
     const unsubUsers = onSnapshot(collection(db, 'users'), snapshot => {
       const students = snapshot.docs.filter(doc => doc.data().role === 'student').length;
       const teachers = snapshot.docs.filter(doc => doc.data().role === 'teacher').length;
       setStats(prev => ({ ...prev, totalStudentsToday: students, totalTeachers: teachers }));
     });
 
-    const unsubAttendance = onSnapshot(collection(db, 'attendance'), snapshot => {
-      const attended = snapshot.docs.filter(doc => doc.data().status === 'present').length;
-      const total = snapshot.size;
-      const percentage = total > 0 ? Math.round((attended / total) * 100) : 0;
+    // Fetch attendance once for today's date
+    const fetchAttendance = async () => {
+      const todayKey = new Date().toISOString().split('T')[0];
+      const busesSnapshot = await getDocs(collection(db, 'attendance'));
 
+      let totalRecords = 0;
+      let totalPresent = 0;
+
+      for (const busDoc of busesSnapshot.docs) {
+        const attendanceDocRef = doc(db, 'attendance', busDoc.id, 'records', todayKey);
+        const attendanceSnap = await getDoc(attendanceDocRef);
+
+        if (attendanceSnap.exists()) {
+          const records = attendanceSnap.data().records;
+          totalRecords += Object.keys(records).length;
+          totalPresent += Object.values(records).filter(status => status === 'present').length;
+        }
+      }
+
+      const percentage = totalRecords > 0 ? Math.round((totalPresent / totalRecords) * 100) : 0;
       setStats(prev => ({ ...prev, attendancePercentage: percentage }));
       setLoading(false);
-    });
+    };
+
+    fetchAttendance();
 
     return () => {
       unsubBuses();
       unsubDrivers();
       unsubUsers();
-      unsubAttendance();
     };
   }, []);
 
